@@ -22,9 +22,9 @@ public class GestionRevista {
 	private List<Autor> autores;
     private  int c,c2;
     
-	protected String pathRevistas = "src/archivos/Revistas.txt";
-	private String pathArticulos = "src/archivos/Articulos.txt";
-	private String pathAutores = "src/archivos/Autores.txt";
+	protected String pathRevistas = "Practica15/src/archivos/Revistas.txt";
+	private String pathArticulos = "Practica15/src/archivos/Articulos.txt";
+	private String pathAutores = "Practica15/src/archivos/Autores.txt";
 
 	public GestionRevista() {
 		revistas = new ArrayList<Revista>();
