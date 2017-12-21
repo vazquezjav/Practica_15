@@ -1,6 +1,6 @@
 package modelo.departamento;
 
-public class Departamento {
+public class Departamento implements java.io.Serializable{
 	private String nombreDepa;
 	private String codigo;
 	private Empleado empleados;

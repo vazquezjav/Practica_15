@@ -12,20 +12,26 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.RandomAccessFile;
 
 import modelo.departamento.Departamento;
 import modelo.departamento.Empleado;
 import modelo.departamento.Empresa;
-import modelo.revista.Articulo;
-import modelo.revista.Autor;
 import modelo.revista.Revista;
 
 public class GestionDepartamento {
 	private List<Empresa> empresas;
 	private List<Departamento> departamentos;
 	private List<Empleado> empleados;
-	private String pathEmpresa = "PracticaBinario/src/archivos/Empresas.dat";
-	private String pathDepartamento = "PracticaBinario/src/archivos/Departamentos.dat";
+	private String pathEmpresa = "Practica15/src/archivos/Empresa.txt";
+	private String pathDepartamento = "Practica15/src/archivos/Departamento.txt";
 
 	public GestionDepartamento() {
 		empresas = new ArrayList<Empresa>();
@@ -34,7 +40,7 @@ public class GestionDepartamento {
 	}
 //metodo para agragar datos del departamento y de el trabajador
 	public void agregarDepartamento(String nombreEm, String apellidoEm, String cedula, String nombreDepa, String codigo) {
-		try {
+	
 			Empleado em = new Empleado();
 			em.setNombreEm(nombreEm);
 			em.setApellidoEm(apellidoEm);
@@ -46,41 +52,31 @@ public class GestionDepartamento {
 			depa.setCodigo(codigo);
 			depa.setEmpleados(em);
 			departamentos.add(depa);
-
-			FileOutputStream file = new FileOutputStream(pathDepartamento, true);
-			DataOutputStream escr = new DataOutputStream(file);
-			escr.writeUTF(nombreEm);
-			escr.writeUTF(apellidoEm);
-			escr.writeUTF(cedula);
-			escr.writeUTF(nombreDepa);
-			escr.writeUTF(codigo);
-		//	escr.writeUTF(em);
-			escr.close();
-			file.close();
+			try {
+				  FileOutputStream file =  new FileOutputStream (pathDepartamento);
+				  ObjectOutputStream escritura = new ObjectOutputStream (file);
+				  escritura.writeObject(depa);
+				  escritura.close();
 
 		} catch (Exception e) {
 		}
 	}
 //metodo para agragar empresa
 	public void agregarEmpresa(String nombre, String ruc, String direccion, Departamento departamento) {
-		try {
+		
 			Empresa emp = new Empresa();
 			emp.setNombre(nombre);
 			emp.setRuc(ruc);
 			emp.setDireccion(direccion);
 			emp.setDepartamentos(departamento);
 			empresas.add(emp);
-			
-			FileOutputStream file = new FileOutputStream(pathEmpresa, true);
-			DataOutputStream escr = new DataOutputStream(file);
-			escr.writeUTF(nombre);
-			escr.writeUTF(ruc);
-			escr.writeUTF(direccion);
-			//escr.writeUTF(departamento);
-			escr.close();
-			file.close();
-
-		} catch (Exception e) {
+			try{
+			 FileOutputStream file =  new FileOutputStream (pathEmpresa);
+			  ObjectOutputStream escritura = new ObjectOutputStream (file);
+			  escritura.writeObject(emp);
+			  escritura.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -141,69 +137,35 @@ public class GestionDepartamento {
 	public List<Empleado> getEmpleados() {
 		return empleados;
 	}
+	
 public List<Departamento> leerDepartamento() throws IOException {
-		
-		String aux = "";
-		FileInputStream lec = null;
-		DataInputStream entrada = null;
-		try {
-			String ruta = pathEmpresa;
-			String line = "";
-			lec = new FileInputStream(ruta);
-			entrada = new DataInputStream(lec);
-			while (true) {
-				String nombreEm = entrada.readUTF();
-				String apellidoEm = entrada.readUTF();
-				String cedula = entrada.readUTF();
-				String nombredepa = entrada.readUTF();
-				String codigo= entrada.readUTF();
-				Empleado em=new Empleado();
-				em.setNombreEm(nombreEm);
-				em.setApellidoEm(apellidoEm);
-				em.setCedula(cedula);
-				Departamento depa=new Departamento();
-				depa.setNombredepa(nombredepa);
-				depa.setCodigo(codigo);
-				depa.setEmpleados(em);
-				departamentos.add(depa);
-
-			}
-
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}finally {
-			entrada.close();
-		}
+	FileInputStream archivoLectura=null;
+	ObjectInputStream entrada=null;
+	try{
+	    archivoLectura=new FileInputStream(pathDepartamento);
+	    entrada = new ObjectInputStream(archivoLectura);
+	    Departamento departamento = (Departamento)entrada.readObject();
+	    departamentos.add(departamento);
+	}catch(Exception e){
+	    e.printStackTrace();
+	}finally{
+	    entrada.close();
+	}
 		return departamentos;
 	}
 	
 public List<Empresa> leerEmpresa() throws IOException {
-	
-	String aux = "";
-	FileInputStream lec = null;
-	DataInputStream entrada = null;
-	try {
-		String ruta = pathEmpresa;
-		String line = "";
-		lec = new FileInputStream(ruta);
-		entrada = new DataInputStream(lec);
-		while (true) {
-			String nombre = entrada.readUTF();
-			String ruc = entrada.readUTF();
-			String direccion= entrada.readUTF();
-			String nombredepa = entrada.readUTF();
-			String codigo= entrada.readUTF();
-			Empresa emp=new Empresa();
-			emp.setNombre(nombre);
-			emp.setRuc(ruc);
-			emp.setDireccion(direccion);
-			empresas.add(emp);
-		}
-
-	} catch (Exception e) {
-		System.out.println(e.getMessage());
-	}finally {
-		entrada.close();
+	FileInputStream archivoLectura=null;
+	ObjectInputStream entrada=null;
+	try{
+	    archivoLectura=new FileInputStream(pathEmpresa);
+	    entrada = new ObjectInputStream(archivoLectura);
+	    Empresa empresa = (Empresa)entrada.readObject();
+	    empresas.add(empresa);
+	}catch(Exception e){
+	    e.printStackTrace();
+	}finally{
+	    entrada.close();
 	}
 	return empresas;
 }

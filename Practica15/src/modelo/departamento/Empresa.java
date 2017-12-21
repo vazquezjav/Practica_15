@@ -1,6 +1,6 @@
 package modelo.departamento;
 
-public class Empresa {
+public class Empresa implements java.io.Serializable{
 	private String nombre;
 	private String ruc;
 	private String direccion;
